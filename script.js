@@ -144,33 +144,92 @@ function getBoard() {
   return board;
 }
 
-function init() {
-  document.getElementById('search').addEventListener('click', function() {
-    var found = findWords(getBoard());
+function search() {
+  var found = findWords(getBoard());
 
-    var foundByLength = {};
-    for (var i = 0; i < found.length; i++) {
-      if (!foundByLength[found[i].length]) {
-        foundByLength[found[i].length] = [];
-      }
-
-      foundByLength[found[i].length].push(found[i]);
+  var foundByLength = {};
+  for (var i = 0; i < found.length; i++) {
+    if (!foundByLength[found[i].length]) {
+      foundByLength[found[i].length] = [];
     }
 
-    var lengths = Object.keys(foundByLength);
-    lengths.sort(function(a, b) {
-      return parseInt(b, 10) - parseInt(a, 10);
-    });
+    foundByLength[found[i].length].push(found[i]);
+  }
 
-    var output = '';
-    for (var i = 0; i < lengths.length; i++) {
-      output += lengths[i] + ' letters:\n';
-      output += foundByLength[lengths[i]].join('\n');
-      output += '\n\n';
-    }
-
-    document.getElementById('results').innerHTML = output;
+  var lengths = Object.keys(foundByLength);
+  lengths.sort(function(a, b) {
+    return parseInt(b, 10) - parseInt(a, 10);
   });
 
-  getBoard();
+  var output = '';
+  for (var i = 0; i < lengths.length; i++) {
+    output += lengths[i] + ' letters:\n';
+    output += foundByLength[lengths[i]].join('\n');
+    output += '\n\n';
+  }
+
+  document.getElementById('results').innerHTML = output;
+}
+
+function allFull() {
+  var result = true;
+  document.querySelectorAll('.boggle-input').forEach(function(i) {
+    if (!i.value) {
+      result = false;
+    }
+  });
+
+  return result;
+}
+
+function init() {
+  document.body.addEventListener('keydown', function() {
+    if (event.code === 'Enter' || event.code === 'Space') {
+      search();
+    }
+  });
+
+  document.getElementById('search').addEventListener('click', function() {
+    search();
+  });
+
+  var inputs = document.querySelectorAll('.boggle-input');
+  inputs.forEach(function(input, index) {
+    input.addEventListener('focus', function() {
+      if (input.value) {
+        input.dataset.previousValue = input.value;
+      }
+
+      input.value = '';
+    });
+
+    input.addEventListener('blur', function() {
+      if (input.dataset.previousValue) {
+        input.value = input.dataset.previousValue;
+      }      
+
+      document.querySelector('#search').disabled = !allFull();
+    });
+
+    input.addEventListener('input', function(e) {
+      if (!e.target.value.match(/[a-zA-Z]/)) {
+        e.target.value = '';
+      }
+
+      if (e.target.value === 'Q' || e.target.value === 'q') {
+        e.target.classList.add('qu');
+      } else {
+        e.target.classList.remove('qu');
+      }
+
+      if (e.target.value.length > 0) {
+        delete input.dataset.previousValue;
+        if (inputs[index + 1]) {
+          inputs[index + 1].focus();
+        } else {
+          input.blur();
+        }
+      }
+    });
+  });
 };
