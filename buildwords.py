@@ -4,7 +4,7 @@ import json
 import re
 
 def makeList():
-    with open('/usr/share/dict/words', 'r') as words:
+    with open('owl2.txt', 'r') as words:
         with open('words.js', 'w') as js:
             js.write('var words = [')
 
@@ -20,7 +20,7 @@ def makeList():
             js.write('];')
 
 def makeTrie():
-    with open('/usr/share/dict/words', 'r') as words:
+    with open('owl2.txt', 'r') as words:
         with open('words.js', 'w') as js:
             trie = {}
 
