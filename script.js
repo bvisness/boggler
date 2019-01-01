@@ -6,7 +6,7 @@ function col(coords) {
   return coords % 4;
 }
 
-function coords(row, col) {
+function crd(row, col) {
   return 4 * row + col;
 }
 
@@ -16,33 +16,70 @@ var neighborOffsets = [
   [ 1, -1], [ 1, 0], [ 1, 1],
 ];
 
+function validNeighbors(coords, visited) {
+  var currentRow = row(coords);
+  var currentCol = col(coords);
+  var neighborCoords = [];
+  for (var i = 0; i < neighborOffsets.length; i++) {
+    var newRow = currentRow + neighborOffsets[i][0];
+    var newCol = currentCol + neighborOffsets[i][1];
+
+    if (newRow < 0 || newRow > 3 || newCol < 0 || newCol > 3) {
+      continue;
+    }
+
+    var newCoords = crd(newRow, newCol);
+
+    if (visited[newCoords]) {
+      continue;
+    }
+
+    neighborCoords.push(newCoords);
+  }
+
+  return neighborCoords;
+}
+
 function findWords(board) {
   if (!board) {
     return null;
   }
 
-  var foundWords = {};
-  for (var i = 0; i < words.length; i++) {
-    var word = words[i];
-
+  var allWords = [];
+  for (var i = 0; i < 16; i++) {
     var visited = (new Array(16)).fill(false);
-    var exists = wordExists(word, -1, board, visited);
+    var words = getWordsTrie(board[i], i, wordTrie[board[i]], board, visited);
+    allWords = allWords.concat(words);
+  }
 
-    if (exists) {
-      if (!foundWords[word.length]) {
-        foundWords[word.length] = [];
-      }
+  return allWords;
+}
 
-      foundWords[word.length].push(word);
+function getWordsTrie(wordSoFar, coords, node, board, visited) {
+  var words = [];
+  visited[coords] = true;
+
+  if (node['done']) {
+    words.push(wordSoFar);
+  }
+
+  var neighborCoords = validNeighbors(coords, visited);
+
+  for (var i = 0; i < neighborCoords.length; i++) {
+    var letter = board[neighborCoords[i]];
+
+    if (node[letter]) {
+      var subWords = getWordsTrie(wordSoFar + letter, neighborCoords[i], node[letter], board, Array.from(visited));
+      words = words.concat(subWords);
     }
   }
 
-  return foundWords;
+  return words;
 }
 
-function wordExists(word, startCoords, board, visited) {
+function wordExists(word, coords, board, visited) {
   // handle base case - try starting at every letter
-  if (startCoords === -1) {
+  if (coords === -1) {
     for (var i = 0; i < 16; i++) {
       var exists = wordExists(word, i, board, visited);
 
@@ -60,33 +97,14 @@ function wordExists(word, startCoords, board, visited) {
   }
 
   // Normal operation - look up letter and try from there
-  var letter = board[startCoords];
+  var letter = board[coords];
   if (word.indexOf(letter) === 0) {
-    // build array of valid neighbors
-    var currentRow = row(startCoords);
-    var currentCol = col(startCoords);
-    var neighborCoords = [];
-    for (var i = 0; i < neighborOffsets.length; i++) {
-      var newRow = currentRow + neighborOffsets[i][0];
-      var newCol = currentCol + neighborOffsets[i][1];
-
-      if (newRow < 0 || newRow > 3 || newCol < 0 || newCol > 3) {
-        continue;
-      }
-
-      var newCoords = coords(newRow, newCol);
-
-      if (visited[newCoords]) {
-        continue;
-      }
-
-      neighborCoords.push(newCoords);
-    }
+    neighborCoords = validNeighbors(coords, visited);
 
     // build next word and visited
     var nextWord = word.slice(letter.length);
     var nextVisited = Array.from(visited);
-    nextVisited[startCoords] = true;
+    nextVisited[coords] = true;
 
     // recursively check neighbors
     for (var i = 0; i < neighborCoords.length; i++) {
@@ -130,7 +148,16 @@ function init() {
   document.getElementById('search').addEventListener('click', function() {
     var found = findWords(getBoard());
 
-    var lengths = Object.keys(found);
+    var foundByLength = {};
+    for (var i = 0; i < found.length; i++) {
+      if (!foundByLength[found[i].length]) {
+        foundByLength[found[i].length] = [];
+      }
+
+      foundByLength[found[i].length].push(found[i]);
+    }
+
+    var lengths = Object.keys(foundByLength);
     lengths.sort(function(a, b) {
       return parseInt(b, 10) - parseInt(a, 10);
     });
@@ -138,7 +165,7 @@ function init() {
     var output = '';
     for (var i = 0; i < lengths.length; i++) {
       output += lengths[i] + ' letters:\n';
-      output += found[lengths[i]].join('\n');
+      output += foundByLength[lengths[i]].join('\n');
       output += '\n\n';
     }
 
