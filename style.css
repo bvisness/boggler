@@ -1,0 +1,7 @@
+.boggle-input {
+    width: 40px;
+    height: 40px;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 2em;
+}
