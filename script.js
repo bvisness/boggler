@@ -183,7 +183,7 @@ function allFull() {
 }
 
 function init() {
-  document.body.addEventListener('keydown', function() {
+  document.body.addEventListener('keydown', function(event) {
     if (event.code === 'Enter' || event.code === 'Space') {
       search();
     }
