@@ -161,14 +161,21 @@ function search() {
     return parseInt(b, 10) - parseInt(a, 10);
   });
 
-  var output = '';
+  var results = document.querySelector('#results');
+  results.innerHTML = '';
   for (var i = 0; i < lengths.length; i++) {
-    output += lengths[i] + ' letters:\n';
-    output += foundByLength[lengths[i]].join('\n');
-    output += '\n\n';
-  }
+    var newHeading = document.createElement('h2');
+    newHeading.appendChild(document.createTextNode(lengths[i] + ' letters:'))
+    results.appendChild(newHeading);
 
-  document.getElementById('results').innerHTML = output;
+    var newList = document.createElement('ul');
+    foundByLength[lengths[i]].forEach(function(word) {
+      var newLI = document.createElement('li');
+      newLI.appendChild(document.createTextNode(word));
+      newList.appendChild(newLI);
+    });
+    results.appendChild(newList);
+  }
 }
 
 function allFull() {

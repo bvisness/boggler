@@ -4,42 +4,81 @@
 <head>
     <title>Boggler</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <script type="text/javascript" src="words.js"></script>
     <script type="text/javascript" src="script.js"></script>
 
+    <link rel="stylesheet" href="normalize.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="boggle-board">
-        <div class="boggle-row">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-        </div>
-        <div class="boggle-row">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-        </div>
-        <div class="boggle-row">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-        </div>
-        <div class="boggle-row">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
-            <input class="boggle-input" maxlength="1">
+    <div class="boggle-board-position">
+        <div class="boggle-board-sizer">
+            <div class="boggle-board">
+                <div class="boggle-row">
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                </div>
+                <div class="boggle-row">
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                </div>
+                <div class="boggle-row">
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                </div>
+                <div class="boggle-row">
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                    <div class="boggle-cell">
+                        <input class="boggle-input" maxlength="1">
+                    </div>
+                </div>
+            </div>
         </div>
         <button id="search" disabled>Search</button>
     </div>
 
-    <pre id="results"></pre>
+    <div id="results"></div>
 
     <script type="text/javascript">
         init();
